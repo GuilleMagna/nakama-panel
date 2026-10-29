@@ -1,0 +1,34 @@
+# Secretos y configuración local
+.env
+.env.*
+!.env.example
+auth.json
+*.pem
+*.key
+
+# Dependencias y recursos generados
+/vendor/
+/node_modules/
+/public/build/
+/public/hot
+
+# Datos, respaldos y archivos privados
+*.sql
+*.sqlite
+*.sqlite3
+*.log
+/backups/
+/storage/*.key
+/storage/app/private/
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+
+# Entorno de desarrollo
+/.idea/
+/.vscode/
+/.phpunit.cache/
+.phpunit.result.cache
+.DS_Store
+Thumbs.db
