@@ -13,6 +13,7 @@ Repositorio inicial de planificación. Todavía no hay aplicación ejecutable ni
 - [Requerimientos](docs/REQUERIMIENTOS.md)
 - [Propuesta técnica](docs/ARQUITECTURA.md)
 - [Primeras entregas propuestas](docs/PLAN.md)
+- [Trabajo con Git](docs/DESARROLLO.md)
 
 Este repositorio contiene la copia de trabajo vigente de los requerimientos. El documento previo de `nakama-central` queda como referencia del relevamiento anterior.
 
