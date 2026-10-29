@@ -25,6 +25,6 @@ Las versiones exactas se fijarán al preparar la aplicación y verificar PHP y e
 
 ## Control de versiones
 
-Repositorio Git local independiente con rama `main`. El remoto GitHub todavía no está creado ni configurado; se recomienda repositorio privado `nakama-panel`.
+Repositorio Git independiente con rama `main`. Remoto privado: https://github.com/GuilleMagna/nakama-panel.
 
 No incluir datos reales, tokens, credenciales, bases de datos ni copias de seguridad. Los ejemplos deben usar información ficticia.

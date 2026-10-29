@@ -5,7 +5,7 @@
 - Carpeta: `C:\localhost\nakama-panel`.
 - Rama principal: `main`.
 - Documentación vigente: `docs/REQUERIMIENTOS.md`.
-- Repositorio remoto: pendiente de identificar mediante URL y validar acceso.
+- Repositorio remoto privado: https://github.com/GuilleMagna/nakama-panel.
 
 ## Flujo propuesto
 
@@ -19,4 +19,4 @@ No copiar archivos de entorno, bases de datos ni credenciales del ERP Agropecuar
 
 ## Estado inicial
 
-Repositorio local inicializado y documentación versionada. Todavía no hay aplicación instalada. La consulta del 29/10/2026 no encontró `nakama-panel` entre los repositorios accesibles mediante la conexión de GitHub; la autenticación de GitHub CLI tampoco estaba disponible. No se configuró un remoto supuesto ni se publicó contenido.
+Repositorio local inicializado y documentación versionada. Todavía no hay aplicación instalada. El 29/10/2026 se creó el repositorio privado GuilleMagna/nakama-panel con la sesión autorizada de GitHub CLI.
