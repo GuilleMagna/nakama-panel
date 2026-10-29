@@ -2,7 +2,7 @@
 
 ## Proyecto
 
-- Carpeta: `C:\localhost\otros-temas\nakama-panel`.
+- Carpeta: `C:\localhost\nakama-panel`.
 - Rama principal: `main`.
 - Documentación vigente: `docs/REQUERIMIENTOS.md`.
 - Repositorio remoto: pendiente de identificar mediante URL y validar acceso.
