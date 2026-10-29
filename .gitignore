@@ -45,3 +45,7 @@ Thumbs.db
 !/storage/framework/sessions/.gitignore
 !/storage/framework/views/.gitignore
 !/storage/logs/.gitignore
+
+!/database/schema/initial-mysql.sql
+/releases/
+
