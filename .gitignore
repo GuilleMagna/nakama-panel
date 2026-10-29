@@ -32,3 +32,16 @@ auth.json
 .phpunit.result.cache
 .DS_Store
 Thumbs.db
+
+/bootstrap/cache/*.php
+/storage/framework/testing/
+/storage/app/public/
+/public/storage
+/.phpactor.json
+
+
+!/storage/framework/cache/.gitignore
+!/storage/framework/cache/data/
+!/storage/framework/sessions/.gitignore
+!/storage/framework/views/.gitignore
+!/storage/logs/.gitignore

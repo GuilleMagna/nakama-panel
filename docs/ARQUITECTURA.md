@@ -45,3 +45,7 @@ WhatsApp se implementará mediante un adaptador cuyo proveedor, credenciales y c
 - Livewire: https://livewire.laravel.com/docs/3.x/installation
 
 Estas referencias orientan la arquitectura; fijar documentación y dependencias de una misma versión al comenzar la implementación.
+
+## Base implementada en entrega 01
+
+Laravel 12.70.2, Livewire 4.4.8, Tailwind 4.3.3 y Vite 7.3.7. PHP local 8.2.12. SQLite para desarrollo/pruebas; MySQL/MariaDB pendiente de validar en el hosting. pnpm como gestor de recursos. El alcance ejecutable está descrito en ENTREGA-01.md.

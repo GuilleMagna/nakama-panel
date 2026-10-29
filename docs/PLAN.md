@@ -12,3 +12,7 @@ Orden inicial para revisar; todavía no implica desarrollo completado.
 Fuera de la primera implementación propuesta: emisión de comprobantes, billetera/pasarela de pagos y actualización remota con un clic. Aprovechar las actualizaciones automáticas de cada WordPress según la política decidida para cada sitio.
 
 Decisiones pendientes en el documento de requerimientos: generación automática de períodos, horarios/anticipación de avisos y detalles secundarios. El orden de entregas no cambia las funcionalidades relevadas.
+
+## Avance al 29/10/2026
+
+Entrega 01 implementada: login privado, clientes/sitios, listado interactivo, historia y configuración de intervalos. Siguiente bloque: consultas protegidas al monitor y programación. Accesos completos y gestión económica continúan pendientes. Ver ENTREGA-01.md para el alcance real.

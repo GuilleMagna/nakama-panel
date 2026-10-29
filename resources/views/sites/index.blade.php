@@ -1,0 +1,1 @@
+<x-layout title="Sitios web"><div class="page-heading"><div><p class="eyebrow">CARTERA DIGITAL</p><h1>Sitios web</h1><p class="muted">Todas tus instalaciones independientes, en un mismo lugar.</p></div><a href="{{ route('sites.create') }}" class="button primary">+ Agregar sitio</a></div><livewire:sites-index /></x-layout>
