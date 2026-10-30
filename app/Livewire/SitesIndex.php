@@ -15,10 +15,11 @@ class SitesIndex extends Component
     #[Url] public string $search = '';
     #[Url] public string $status = '';
     #[Url] public string $client = '';
+    #[Url] public string $ownership = '';
 
     public function updated($property): void
     {
-        if (in_array($property, ['search', 'status', 'client'])) {
+        if (in_array($property, ['search', 'status', 'client', 'ownership'])) {
             $this->resetPage();
         }
     }
@@ -26,6 +27,7 @@ class SitesIndex extends Component
     public function render()
     {
         $sites = Site::query()->with('client')
+            ->when(in_array($this->ownership, ['own', 'client']), fn ($q) => $q->where('ownership', $this->ownership))
             ->when($this->search !== '', fn ($q) => $q->where(fn ($q) => $q->where('name', 'like', '%'.mb_substr($this->search, 0, 150).'%')->orWhere('url', 'like', '%'.mb_substr($this->search, 0, 150).'%')))
             ->when(in_array($this->status, ['active', 'paused', 'archived']), fn ($q) => $q->where('status', $this->status))
             ->when(ctype_digit($this->client), fn ($q) => $q->where('client_id', $this->client))

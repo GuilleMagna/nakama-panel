@@ -133,6 +133,8 @@ class PanelTest extends TestCase
         Site::create(['name' => 'Beta Web', 'url' => 'https://beta.test', 'ownership' => 'own', 'status' => 'paused']);
         Livewire::test(SitesIndex::class)->set('search', 'Alfa')->assertSee('Alfa Web')->assertDontSee('Beta Web');
         Livewire::test(SitesIndex::class)->set('status', 'paused')->assertSee('Beta Web')->assertDontSee('Alfa Web');
+        Livewire::test(SitesIndex::class)->set('ownership', 'own')->assertSee('Beta Web')->assertDontSee('Alfa Web');
+        Livewire::test(SitesIndex::class)->set('ownership', 'client')->assertSee('Alfa Web')->assertDontSee('Beta Web');
         Livewire::test(SitesIndex::class)->set('client', (string) $client->id)->assertSee('Alfa Web')->assertDontSee('Beta Web');
     }
 
