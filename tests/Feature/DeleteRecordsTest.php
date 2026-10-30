@@ -44,7 +44,8 @@ class DeleteRecordsTest extends TestCase
         foreach ([$site, $other] as $record) {
             $record->events()->create(['user_id' => $user->id, 'category' => 'redesign', 'title' => 'Historia', 'occurred_on' => '2025-01-01', 'description' => 'Detalle']);
         }
-        $this->get('/sites/'.$site->id)->assertOk()->assertSee('data-confirm=', false)->assertSee('Eliminar sitio: Eliminar');
+        $this->get('/sites/'.$site->id)->assertOk()->assertDontSee('data-confirm=', false);
+        $this->get('/sites/'.$site->id.'/edit')->assertOk()->assertSee('data-confirm=', false)->assertSee('Eliminar sitio: Eliminar');
         $this->delete('/sites/'.$site->id)->assertRedirect('/sites');
         $this->assertDatabaseMissing('sites', ['id' => $site->id]);
         $this->assertDatabaseMissing('site_events', ['site_id' => $site->id]);

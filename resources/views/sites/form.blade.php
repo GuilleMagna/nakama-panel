@@ -11,4 +11,4 @@
     <label>Intervalo propio de consulta (horas)<input type="number" name="monitor_interval_hours" min="1" max="720" value="{{ old('monitor_interval_hours', $site->monitor_interval_hours) }}" placeholder="Heredar configuración general"><small>Vacío: hereda el intervalo general, actualmente {{ \App\Models\PanelSetting::currentInterval() }} horas.</small></label>
     <label>Notas<textarea name="notes" rows="4" maxlength="10000">{{ old('notes', $site->notes) }}</textarea><small>No incluyas contraseñas en las notas.</small></label>
     <div class="form-actions"><a href="{{ route('sites.index') }}" class="button secondary">Cancelar</a><button class="button primary">Guardar sitio</button></div>
-</form></x-layout>
+</form>@if($site->exists)<div class="form-panel" style="margin-top:20px"><x-delete-button :action="route('sites.destroy', $site)" :label="'Eliminar sitio: '.$site->name" :confirmation="'¿Eliminar '. $site->name .' y todo su historial del panel? Esta acción no se puede deshacer. No elimina la instalación de WordPress.'" /></div>@endif</x-layout>
