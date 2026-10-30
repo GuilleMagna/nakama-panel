@@ -10,7 +10,7 @@ En phpMyAdmin seleccionar esa base VACÍA e importar `database/schema/initial-my
 
 ## Archivos
 
-El repositorio está en `/home/bizpills/nakama-panel`, rama `feat/base-clientes-sitios`. El paquete complementario `nakama-panel-runtime.zip` solo incluye `vendor/` con dependencias de producción y `public/build/` con recursos compilados. Extraerlo en la raíz del repositorio. No contiene `.env`, base de datos, `.git`, logs ni datos locales.
+El repositorio está en `/home/bizpills/nakama-panel`, rama `main`. El paquete complementario `nakama-panel-runtime.zip` solo incluye `vendor/` con dependencias de producción y `public/build/` con recursos compilados. Extraerlo en la raíz del repositorio. No contiene `.env`, base de datos, `.git`, logs ni datos locales.
 
 En un clon nuevo `bootstrap/cache` y las carpetas de `storage` deben existir y ser escribibles por el usuario del hosting. No usar permisos 777. No subir cachés generadas en otro equipo.
 

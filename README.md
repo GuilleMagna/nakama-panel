@@ -55,6 +55,6 @@ La configuración de frecuencia es funcional pero el motor de consultas y el con
 - [Trabajo con Git](docs/DESARROLLO.md)
 - [Alcance de la entrega 01](docs/ENTREGA-01.md)
 
-Repositorio público: https://github.com/GuilleMagna/nakama-panel. Trabajar con ramas y pull requests. No versionar `.env`, tokens, contraseñas, datos reales ni respaldos. Los documentos de este repositorio son la copia vigente del relevamiento.
+Repositorio público: https://github.com/GuilleMagna/nakama-panel. Trabajar siempre en `main`; no crear otras ramas salvo pedido explícito del usuario. No versionar `.env`, tokens, contraseñas, datos reales ni respaldos. Los documentos de este repositorio son la copia vigente del relevamiento.
 
 Instalación sin Terminal del hosting: ver docs/INSTALACION-CPANEL.md.
