@@ -38,6 +38,12 @@ Apuntar `panel.whileam.com.ar` a `/home/bizpills/nakama-panel/public`, nunca a l
 
 ## Verificación
 
+### Actualizaciones desde Git
+
+Después de la instalación inicial, utilizar **Actualizar desde remoto** y luego **Deploy HEAD Commit**. La tarea versionada en `.cpanel.yml` ejecuta `deploy/cpanel.sh` desde `/home/bizpills/nakama-panel`, usando PHP CLI 8.4 de cPanel. Aplica `php artisan migrate --force --no-interaction` y limpia las vistas compiladas. No importa esquemas iniciales, no recrea usuarios y no cambia APP_KEY.
+
+Revisar el resultado del despliegue: actualizar desde remoto por sí solo descarga código, pero no ejecuta migraciones. Si la tarea falla por una ruta PHP o por restricciones del proveedor, corregir la causa y volver a desplegar. Respaldar la base antes de cambios de estructura. Este paso no instala dependencias ni compila recursos; cambios que los requieran necesitan también su paquete de producción actualizado.
+
 Comprobar login, alta/edición de cliente y sitio, historia y configuración. Verificar que `.env`, `.git` y `vendor` no sean accesibles desde el subdominio. El monitoreo automático y la gestión económica siguen pendientes de desarrollo.
 
 ### Generar el alta inicial del administrador en tu equipo
