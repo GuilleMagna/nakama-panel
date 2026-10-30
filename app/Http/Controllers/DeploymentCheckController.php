@@ -16,8 +16,16 @@ class DeploymentCheckController extends Controller
             'archivos_pendientes' => [],
         ];
 
+        $manifest = base_path('deploy/tracked-files.json');
+        if (is_readable($manifest)) {
+            $tracked = json_decode(file_get_contents($manifest), true);
+            if (is_array($tracked)) {
+                $report += (new \App\Support\DeploymentFiles)->inspect(base_path(), $tracked);
+            }
+        }
+
         if (! function_exists('proc_open')) {
-            $report['mensaje'] = 'El hosting no permite consultar Git desde PHP. No se modificó ningún archivo.';
+            $report['mensaje'] = 'Git no está disponible desde PHP; revisar la comparación de archivos incluida.';
             return response()->json($report)->header('Cache-Control', 'no-store');
         }
 
