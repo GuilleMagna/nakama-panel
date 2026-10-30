@@ -81,7 +81,7 @@
     "resources/views/dashboard.blade.php": "a9b505df47a7b0b31de571470e652195fedc5f62",
     "resources/views/livewire/sites-index.blade.php": "4d6940e7b8c2af02f80efefae8fbf814ffd770a9",
     "resources/views/settings.blade.php": "625a3bfb873c83e2c92800d072610258c168f028",
-    "resources/views/sites/access-form.blade.php": "676263c75bb0a6817a134d19f8d461d0d1c43659",
+    "resources/views/sites/access-form.blade.php": "f2a5d9d3549464a4516e5c3e74eeab1d72699aa0",
     "resources/views/sites/form.blade.php": "19b8d69d36ece97b9f420b988a4641834839f630",
     "resources/views/sites/index.blade.php": "d8f19d3cf2f23a3b4ef5d3b47d0e64f5cd194e7e",
     "resources/views/sites/show.blade.php": "48f30c6a7afc5faa1f6210ed811af087ed5d5a15",
