@@ -75,7 +75,7 @@
     "resources/views/components/edit-button.blade.php": "ef10ec3515657cd8c6313a26e1d1d2aff310f61b",
     "resources/views/components/layout.blade.php": "71cb7ab73e65aadc8eefca334dad8ed3134dd20d",
     "resources/views/dashboard.blade.php": "68626fb8d0fc38b3e417051c90e5986ac1f2ebd1",
-    "resources/views/livewire/sites-index.blade.php": "edeaa3f6645347567e18fda2e1d8fa266ca9cee9",
+    "resources/views/livewire/sites-index.blade.php": "bd2ffb9debeb46cec2e2211b5f370236a8cb8636",
     "resources/views/settings.blade.php": "625a3bfb873c83e2c92800d072610258c168f028",
     "resources/views/sites/access-form.blade.php": "676263c75bb0a6817a134d19f8d461d0d1c43659",
     "resources/views/sites/form.blade.php": "459804a793ec81353b9dda2466ff0d6c1341e9a5",
