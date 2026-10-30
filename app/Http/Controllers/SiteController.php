@@ -20,7 +20,7 @@ class SiteController extends Controller
         $site->load('client');
         $events = $site->events()->orderByDesc('occurred_on')->orderByDesc('id')->paginate(15);
 
-        return view('sites.show', compact('site', 'events'));
+        return response()->view('sites.show', compact('site', 'events'))->header('Cache-Control', 'no-store, private');
     }
 
     public function edit(Site $site)

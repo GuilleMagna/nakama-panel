@@ -29,6 +29,9 @@ class SiteAccessTest extends TestCase
             }
         }
         $this->assertSame(6, substr_count($response->getContent(), 'data-copy-access aria-label='));
+        $this->get('/sites/'.$site->id)->assertOk()->assertHeader('Cache-Control', 'no-store, private')
+            ->assertSee('Acceso a WordPress')->assertSee('wp-user')->assertSee('wp-secret')
+            ->assertSee('readonly', false)->assertDontSee('cp-secret')->assertDontSee('ftp-secret');
         $data['access']['wordpress'] = ['username' => 'updated', 'password' => ''];
         $data['access']['cpanel']['password'] = ' replacement ';
         $this->put('/sites/'.$site->id, $data)->assertSessionHasNoErrors();

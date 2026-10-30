@@ -1,7 +1,16 @@
 <x-layout :title="$site->name"><a class="back-link" href="{{ route('sites.index') }}">← Sitios web</a>
 <div class="page-heading"><div><p class="eyebrow">FICHA DEL SITIO</p><h1>{{ $site->name }}</h1><a href="{{ $site->url }}" target="_blank" rel="noopener noreferrer" class="text-link">{{ $site->url }} ↗</a></div><x-edit-button :href="route('sites.edit', $site)" label="Editar sitio" /></div>
 <div class="stats-grid"><article class="stat"><span>Cliente</span><strong class="stat-text">{{ $site->client?->name ?? 'Sitio propio' }}</strong><small>{{ $site->ownership === 'own' ? 'Propiedad de la empresa' : 'Sitio de cliente' }}</small></article><article class="stat"><span>Estado administrativo</span><strong class="stat-text">{{ ['active' => 'Activo', 'paused' => 'Pausado', 'archived' => 'Archivado'][$site->status] }}</strong><small>No representa disponibilidad web</small></article><article class="stat"><span>Intervalo previsto</span><strong>{{ $site->effectiveInterval() }}<em> h</em></strong><small>{{ $site->monitor_interval_hours === null ? 'Heredado de configuración general' : 'Configuración particular' }}</small></article><article class="stat"><span>Token del monitor</span><strong class="stat-text">{{ $site->getRawOriginal('monitor_token') ? 'Guardado' : 'Sin configurar' }}</strong><small>Consultas aún no implementadas</small></article></div>
-@if($site->admin_url)<p><a class="button secondary" href="{{ $site->admin_url }}" target="_blank" rel="noopener noreferrer">Abrir backend ↗</a></p>@endif
+<section class="panel form-stack">
+    <h2>Acceso a WordPress</h2>
+    @if($site->admin_url)<p><a class="button secondary" href="{{ $site->admin_url }}" target="_blank" rel="noopener noreferrer">Abrir WordPress ↗</a></p>@else<p class="muted">Todavía no se configuró la URL del backend.</p>@endif
+    @php($wordpress = $site->access_credentials['wordpress'] ?? [])
+    <div class="form-grid">
+        <x-access-input id="wordpress-username" name="wordpress_username" label="Usuario de WordPress" :value="$wordpress['username'] ?? ''" :readonly="true" />
+        <x-access-input id="wordpress-password" name="wordpress_password" label="Contraseña de WordPress" :value="$wordpress['password'] ?? ''" :maxlength="1000" :readonly="true" />
+    </div>
+    <small class="muted">Para cambiar estos datos, usá la ruedita de editar sitio.</small>
+</section>
 @if($site->notes)<section class="panel"><h2>Notas</h2><p class="preserve">{{ $site->notes }}</p></section>@endif
 <div class="dashboard-grid history-grid"><section class="panel"><p class="eyebrow">A LO LARGO DEL TIEMPO</p><h2>Historia del sitio</h2><p class="muted">Rediseños, migraciones e incidentes registrados por vos.</p>
 @forelse($events as $event)<article class="timeline-event"><span class="badge">{{ \App\Models\SiteEvent::CATEGORIES[$event->category] ?? $event->category }}</span><small>{{ $event->occurred_on->format('d/m/Y') }}{{ $event->approximate ? ' · fecha aproximada' : '' }}</small><h3>{{ $event->title }}</h3><p class="preserve">{{ $event->description }}</p><small class="muted">Registrado el {{ $event->created_at->format('d/m/Y H:i') }}</small></article>@empty<div class="empty compact"><span>↗</span><h3>Todavía no hay hechos registrados.</h3><p>Podés agregar eventos anteriores al alta del sitio.</p></div>@endforelse
