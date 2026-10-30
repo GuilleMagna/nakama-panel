@@ -68,6 +68,16 @@ class SiteController extends Controller
         return redirect()->route('sites.show', $site)->with('success', 'Evento agregado a la historia del sitio.');
     }
 
+    public function destroy(Site $site)
+    {
+        \Illuminate\Support\Facades\DB::transaction(function () use ($site) {
+            $site->events()->delete();
+            $site->delete();
+        });
+
+        return redirect()->route('sites.index')->with('success', 'Sitio e historial eliminados del panel.');
+    }
+
     private function validated(Request $request, ?Site $site = null): array
     {
         $request->merge(['url' => rtrim(trim((string) $request->input('url')), '/')]);

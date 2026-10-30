@@ -1,5 +1,5 @@
 <x-layout title="Resumen">
-    <div class="page-heading"><div><p class="eyebrow">TU ESPACIO DE CONTROL</p><h1>Una mirada a tu operación.</h1><p class="muted">Clientes, sitios y su historia, siempre a mano.</p></div><a href="{{ route('sites.create') }}" class="button primary">+ Agregar sitio</a></div>
+    <div class="page-heading"><div><p class="eyebrow">TU ESPACIO DE CONTROL</p><h1>Una mirada a tu operación.</h1><p class="muted">Clientes, sitios y su historia, siempre a mano.</p></div><x-add-button :href="route('sites.create')" label="Agregar sitio" /></div>
     <div class="stats-grid">
         <article class="stat"><span>Sitios registrados</span><strong>{{ $siteCount }}</strong><small>Tu cartera de sitios web</small></article>
         <article class="stat"><span>Clientes</span><strong>{{ $clientCount }}</strong><small>Relaciones en un solo lugar</small></article>

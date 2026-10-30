@@ -22,9 +22,9 @@ Route::middleware('auth')->group(function () {
         'recentEvents' => SiteEvent::orderByDesc('occurred_on')->limit(5)->get(),
     ]))->name('dashboard');
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
-    Route::resource('clients', ClientController::class)->except(['show', 'destroy']);
+    Route::resource('clients', ClientController::class)->except(['show']);
     Route::view('/sites', 'sites.index')->name('sites.index');
-    Route::resource('sites', SiteController::class)->except(['index', 'destroy']);
+    Route::resource('sites', SiteController::class)->except(['index']);
     Route::post('/sites/{site}/events', [SiteController::class, 'event'])->name('sites.events.store');
     Route::get('/settings', fn () => view('settings', ['interval' => PanelSetting::currentInterval()]))->name('settings');
     Route::put('/settings', function (Request $request) {

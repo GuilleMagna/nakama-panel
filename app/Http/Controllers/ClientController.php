@@ -43,4 +43,14 @@ class ClientController extends Controller
     {
         return $request->validate(['name' => ['required', 'string', 'max:255'], 'email' => ['nullable', 'email', 'max:255'], 'phone' => ['nullable', 'string', 'max:60'], 'notes' => ['nullable', 'string', 'max:10000']]);
     }
+
+    public function destroy(Client $client)
+    {
+        if ($client->sites()->exists()) {
+            return redirect()->route('clients.index')->withErrors(['client' => 'No se puede eliminar un cliente con sitios asociados. Reasigná o eliminá sus sitios primero.']);
+        }
+        $client->delete();
+
+        return redirect()->route('clients.index')->with('success', 'Cliente eliminado.');
+    }
 }
