@@ -11,7 +11,7 @@ class SiteAccessTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_access_is_encrypted_and_passwords_are_not_rendered_or_serialized(): void
+    public function test_access_is_encrypted_and_visible_with_copy_controls_only_in_authenticated_edit(): void
     {
         $this->withoutVite()->actingAs(User::factory()->create());
         $data = ['name' => 'Sitio', 'url' => 'https://access.test', 'ownership' => 'own', 'status' => 'active', 'access' => ['wordpress' => ['username' => 'wp-user', 'password' => 'wp-secret'], 'cpanel' => ['url' => 'https://hosting.test:2083', 'username' => 'cp-user', 'password' => 'cp-secret'], 'ftp' => ['host' => 'ftp.test', 'port' => 22, 'protocol' => 'sftp', 'username' => 'ftp-user', 'password' => 'ftp-secret']]];
@@ -21,7 +21,14 @@ class SiteAccessTest extends TestCase
         $this->assertStringNotContainsString('wp-user', $site->getRawOriginal('access_credentials'));
         $this->assertStringNotContainsString('ftp-secret', $site->getRawOriginal('access_credentials'));
         $this->assertArrayNotHasKey('access_credentials', $site->toArray());
-        $this->get('/sites/'.$site->id.'/edit')->assertOk()->assertSee('wp-user')->assertDontSee('wp-secret')->assertDontSee('cp-secret')->assertDontSee('ftp-secret');
+        $response = $this->get('/sites/'.$site->id.'/edit')->assertOk()->assertHeader('Cache-Control', 'no-store, private')
+            ->assertSee('wp-user')->assertSee('wp-secret')->assertSee('cp-secret')->assertSee('ftp-secret');
+        foreach (['wordpress', 'cpanel', 'ftp'] as $kind) {
+            foreach (['username', 'password'] as $field) {
+                $response->assertSee('id="'.$kind.'-'.$field.'" type="text"', false);
+            }
+        }
+        $this->assertSame(6, substr_count($response->getContent(), 'data-copy-access aria-label='));
         $data['access']['wordpress'] = ['username' => 'updated', 'password' => ''];
         $data['access']['cpanel']['password'] = ' replacement ';
         $this->put('/sites/'.$site->id, $data)->assertSessionHasNoErrors();

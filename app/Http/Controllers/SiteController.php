@@ -25,7 +25,7 @@ class SiteController extends Controller
 
     public function edit(Site $site)
     {
-        return view('sites.form', ['site' => $site, 'clients' => Client::orderBy('name')->get()]);
+        return response()->view('sites.form', ['site' => $site, 'clients' => Client::orderBy('name')->get()])->header('Cache-Control', 'no-store, private');
     }
 
     public function store(Request $request)

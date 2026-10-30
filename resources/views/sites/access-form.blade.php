@@ -12,7 +12,7 @@
         <label>Protocolo<select name="access[ftp][protocol]">@foreach(['ftp' => 'FTP', 'ftps' => 'FTPS', 'sftp' => 'SFTP'] as $value => $text)<option value="{{ $value }}" @selected(($access['ftp']['protocol'] ?? 'sftp') === $value)>{{ $text }}</option>@endforeach</select></label>
     @endif
     <div class="form-grid">
-        <label>Usuario de {{ $label }}<input name="access[{{ $kind }}][username]" maxlength="255" autocomplete="off" value="{{ $access[$kind]['username'] ?? '' }}"></label>
-        <label>{{ $site->exists ? 'Reemplazar contraseña' : 'Contraseña' }} de {{ $label }}<input type="password" name="access[{{ $kind }}][password]" maxlength="1000" autocomplete="new-password" value=""><small>{{ !empty($access[$kind]['password']) ? 'Contraseña guardada.' : 'Sin contraseña guardada.' }}</small></label>
+        <x-access-input :id="$kind.'-username'" :name="'access['.$kind.'][username]'" :label="'Usuario de '.$label" :value="$access[$kind]['username'] ?? ''" />
+        <x-access-input :id="$kind.'-password'" :name="'access['.$kind.'][password]'" :label="'Contraseña de '.$label" :value="$access[$kind]['password'] ?? ''" :maxlength="1000" />
     </div>
 @endforeach

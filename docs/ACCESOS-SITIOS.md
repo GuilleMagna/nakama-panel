@@ -1,8 +1,8 @@
 # Accesos por sitio
 
 El alta y la edición permiten guardar credenciales de WordPress, cPanel y FTP/FTPS/SFTP.
-Son opcionales y se almacenan juntas cifradas mediante APP_KEY. Las contraseñas nunca se precargan en el formulario ni se incluyen en la serialización del sitio o en los datos de sesión de una validación fallida.
-Al editar, una contraseña vacía conserva la anterior; una nueva la reemplaza. Esta entrega permite registrar y reemplazar accesos, sin revelar contraseñas guardadas.
+Son opcionales y se almacenan juntas cifradas mediante APP_KEY. Usuarios y contraseñas se muestran como texto en la edición autenticada y cada campo tiene un botón para copiar su valor actual. La respuesta de edición impide su almacenamiento en caché. Las credenciales no se incluyen en la serialización del sitio ni en los datos de sesión de una validación fallida.
+Al editar, una contraseña vacía conserva la anterior; una nueva la reemplaza. El botón de copiar informa éxito, campo vacío o fallo de permisos del portapapeles, y nunca envía el formulario.
 
 ## Actualizar una instalación existente
 
