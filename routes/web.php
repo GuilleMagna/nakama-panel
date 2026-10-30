@@ -15,6 +15,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'store'])->middleware('throttle:15,1');
 });
 Route::middleware('auth')->group(function () {
+    Route::get('/settings/deployment-check', \App\Http\Controllers\DeploymentCheckController::class)->middleware('throttle:6,1');
     Route::get('/', fn () => view('dashboard', [
         'siteCount' => Site::count(), 'clientCount' => Client::count(),
         'activeCount' => Site::where('status', 'active')->count(),
