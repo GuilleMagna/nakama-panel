@@ -50,3 +50,7 @@ Thumbs.db
 !/deploy/update-site-access.sql
 /releases/
 
+# Paquetes de instalación subidos a la raíz del repositorio en cPanel
+/nakama-panel-runtime.zip
+/runtime-part-*.zip
+
