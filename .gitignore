@@ -47,5 +47,6 @@ Thumbs.db
 !/storage/logs/.gitignore
 
 !/database/schema/initial-mysql.sql
+!/deploy/update-site-access.sql
 /releases/
 

@@ -30,7 +30,12 @@ class SiteController extends Controller
 
     public function store(Request $request)
     {
-        $site = Site::create($this->validated($request));
+        $data = $this->validated($request);
+        $credentials = $data['access'] ?? [];
+        unset($data['access']);
+        $site = new Site($data);
+        $site->access_credentials = $credentials;
+        $site->save();
 
         return redirect()->route('sites.show', $site)->with('success', 'Sitio registrado. Todavía no se realizaron consultas al monitor.');
     }
@@ -38,6 +43,15 @@ class SiteController extends Controller
     public function update(Request $request, Site $site)
     {
         $data = $this->validated($request, $site);
+        $credentials = $site->access_credentials ?? [];
+        foreach ($data['access'] ?? [] as $kind => $fields) {
+            if (($fields['password'] ?? null) === null || $fields['password'] === '') {
+                unset($fields['password']);
+            }
+            $credentials[$kind] = array_replace($credentials[$kind] ?? [], $fields);
+        }
+        unset($data['access']);
+        $site->access_credentials = $credentials;
         if (empty($data['monitor_token'])) {
             unset($data['monitor_token']);
         }
@@ -69,6 +83,16 @@ class SiteController extends Controller
             'monitor_token' => ['nullable', 'string', 'max:255'],
             'monitor_interval_hours' => ['nullable', 'integer', 'min:1', 'max:720'],
             'notes' => ['nullable', 'string', 'max:10000'],
+            'access' => ['sometimes', 'array:wordpress,cpanel,ftp'],
+            'access.wordpress' => ['sometimes', 'array:username,password'],
+            'access.cpanel' => ['sometimes', 'array:url,username,password'],
+            'access.ftp' => ['sometimes', 'array:host,port,protocol,username,password'],
+            'access.*.username' => ['nullable', 'string', 'max:255'],
+            'access.*.password' => ['nullable', 'string', 'max:1000'],
+            'access.cpanel.url' => ['nullable', 'url:http,https', 'max:500'],
+            'access.ftp.host' => ['nullable', 'string', 'max:255'],
+            'access.ftp.port' => ['nullable', 'integer', 'between:1,65535'],
+            'access.ftp.protocol' => ['nullable', Rule::in(['ftp', 'ftps', 'sftp'])],
         ]);
     }
 }

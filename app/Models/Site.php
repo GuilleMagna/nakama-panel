@@ -10,11 +10,11 @@ class Site extends Model
 {
     protected $fillable = ['client_id', 'name', 'url', 'ownership', 'status', 'admin_url', 'monitor_endpoint', 'monitor_token', 'monitor_interval_hours', 'notes'];
 
-    protected $hidden = ['monitor_token'];
+    protected $hidden = ['monitor_token', 'access_credentials'];
 
     protected function casts(): array
     {
-        return ['monitor_token' => 'encrypted', 'monitor_interval_hours' => 'integer'];
+        return ['monitor_token' => 'encrypted', 'access_credentials' => 'encrypted:array', 'monitor_interval_hours' => 'integer'];
     }
 
     public function client(): BelongsTo

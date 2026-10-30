@@ -54,7 +54,10 @@ alter table `site_events` add index `site_events_site_id_occurred_on_index`(`sit
 
 create table `panel_settings` (`id` bigint unsigned not null auto_increment primary key, `monitor_interval_hours` int unsigned not null default '12', `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' engine = InnoDB;
 
+alter table `sites` add `access_credentials` text null;
+
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000000_create_users_table', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000001_create_cache_table', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000002_create_jobs_table', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_10_29_000001_create_panel_tables', 1);
+INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_10_30_000001_add_access_credentials_to_sites', 1);
