@@ -17,12 +17,27 @@ class SiteController extends Controller
         return view('sites.form', ['site' => new Site(['ownership' => 'client', 'status' => 'active']), 'clients' => Client::orderBy('name')->get()]);
     }
 
-    public function show(Site $site)
+    public function show(Request $request, Site $site)
     {
         $site->load('client');
         $events = $site->events()->orderByDesc('occurred_on')->orderByDesc('id')->paginate(15);
 
-        return response()->view('sites.show', compact('site', 'events'))->header('Cache-Control', 'no-store, private');
+        $updateFilter = match ($request->query('updates')) {
+            'available' => 'available',
+            'current' => 'current',
+            default => 'all',
+        };
+        $snapshot = $site->monitor_snapshot;
+        $updateItems = $snapshot ? [
+            ['name' => 'WordPress', ...$snapshot['wordpress']],
+            [...$snapshot['theme'], 'name' => 'Tema activo · '.$snapshot['theme']['name']],
+            ...$snapshot['plugins'],
+        ] : [];
+        if ($updateFilter !== 'all') {
+            $updateItems = array_filter($updateItems, fn (array $item) => $item['update_available'] === ($updateFilter === 'available'));
+        }
+
+        return response()->view('sites.show', compact('site', 'events', 'updateFilter', 'updateItems'))->header('Cache-Control', 'no-store, private');
     }
 
     public function edit(Site $site)

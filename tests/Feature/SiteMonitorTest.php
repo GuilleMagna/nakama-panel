@@ -39,6 +39,11 @@ class SiteMonitorTest extends TestCase
         $this->assertSame(2, $site->pendingUpdates());
         $this->assertNotNull($site->monitor_checked_at);
         $this->get(route('sites.show', $site))->assertOk()->assertSee('Plugin de prueba')->assertSee('2.1')->assertDontSee('token-de-prueba');
+        $available = route('sites.show', ['site' => $site, 'updates' => 'available']);
+        $this->get('/sites')->assertOk()->assertSee($available.'#monitor', false)->assertSee('2 pendientes');
+        $this->get($available)->assertOk()->assertSee('Plugin de prueba')->assertDontSee('Tema activo · Tema');
+        $this->get(route('sites.show', ['site' => $site, 'updates' => 'current']))
+            ->assertOk()->assertSee('Tema activo · Tema')->assertDontSee('Plugin de prueba');
 
         $this->post($url)->assertSessionHasErrors(['monitor' => 'Conexión rechazada.']);
         $this->assertSame(2, $site->fresh()->pendingUpdates());

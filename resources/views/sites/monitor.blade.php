@@ -14,17 +14,31 @@
     @endif
     @if($snapshot)
         <p class="muted">Última consulta exitosa {{ $site->monitor_checked_at?->format('d/m/Y H:i') }} · Nakama Monitor {{ $snapshot['monitor_version'] }}</p>
+        <nav aria-label="Filtrar actualizaciones" style="display:flex;gap:8px;flex-wrap:wrap">
+            @foreach(['all' => 'Todas', 'available' => 'Disponible', 'current' => 'Sin pendientes'] as $filter => $label)
+                <a class="button {{ $updateFilter === $filter ? 'primary' : 'secondary' }}"
+                    href="{{ route('sites.show', ['site' => $site, 'updates' => $filter]) }}#monitor"
+                    @if($updateFilter === $filter) aria-current="true" @endif>{{ $label }}</a>
+            @endforeach
+        </nav>
         <div class="table-scroll">
             <table>
                 <thead><tr><th>Componente</th><th>Versión instalada</th><th>Actualización</th></tr></thead>
                 <tbody>
-                    @foreach([['name' => 'WordPress', ...$snapshot['wordpress']], ['name' => 'Tema activo · '.$snapshot['theme']['name'], ...$snapshot['theme']], ...$snapshot['plugins']] as $item)
+                    @forelse($updateItems as $item)
                         <tr>
                             <td>{{ $item['name'] }}</td>
                             <td>{{ $item['version'] ?: '—' }}</td>
-                            <td>{{ $item['update_available'] ? ('Disponible'.($item['new_version'] ? ' · '.$item['new_version'] : '')) : 'Sin pendientes' }}</td>
+                            <td>
+                                <x-health-badge :state="$item['update_available'] ? 'updates' : 'ok'">
+                                    {{ $item['update_available'] ? 'Disponible' : 'Sin pendientes' }}
+                                    @if($item['update_available'] && $item['new_version']) · {{ $item['new_version'] }} @endif
+                                </x-health-badge>
+                            </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr><td colspan="3">{{ $updateFilter === 'available' ? 'No hay actualizaciones disponibles.' : 'No hay componentes sin pendientes.' }}</td></tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
