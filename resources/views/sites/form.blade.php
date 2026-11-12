@@ -4,6 +4,18 @@
     <h2>Información del sitio</h2><div class="form-grid"><label>Nombre *<input name="name" required maxlength="255" value="{{ old('name', $site->name) }}"></label><label>URL pública *<input type="url" name="url" placeholder="https://ejemplo.com.ar" required maxlength="500" value="{{ old('url', $site->url) }}"></label></div>
     <div class="form-grid"><label>Propiedad *<select name="ownership">@foreach(['client' => 'De un cliente', 'own' => 'Propio'] as $key => $label)<option value="{{ $key }}" @selected(old('ownership', $site->ownership) === $key)>{{ $label }}</option>@endforeach</select></label><label>Cliente<select name="client_id"><option value="">Sin cliente (sitio propio)</option>@foreach($clients as $client)<option value="{{ $client->id }}" @selected((string) old('client_id', $site->client_id) === (string) $client->id)>{{ $client->name }}</option>@endforeach</select><small>Obligatorio si el sitio pertenece a un cliente.</small></label></div>
     <div class="form-grid"><label>Estado administrativo<select name="status">@foreach(['active' => 'Activo', 'paused' => 'Pausado', 'archived' => 'Archivado'] as $key => $label)<option value="{{ $key }}" @selected(old('status', $site->status) === $key)>{{ $label }}</option>@endforeach</select></label><label>URL de acceso al backend<input type="url" name="admin_url" maxlength="500" value="{{ old('admin_url', $site->admin_url) }}" placeholder="https://ejemplo.com.ar/wp-admin"></label></div>
+    <hr>
+    <h2>Vencimientos</h2>
+    <p class="muted">Ingresá mes y año (AAAA-MM) o la fecha completa (AAAA-MM-DD). Para un mes, el aviso se calcula desde su primer día.</p>
+    <div class="form-grid">
+        @foreach(\App\Models\Site::RENEWAL_LABELS as $service => $label)
+            <label>{{ $label }}
+                <input name="{{ $service }}_renewal" maxlength="10" placeholder="2027-02" value="{{ old($service.'_renewal', $site->getAttribute($service.'_renewal')) }}">
+            </label>
+        @endforeach
+    </div>
+    <input type="hidden" name="renewal_alerts_enabled" value="0">
+    <label class="checkbox"><input type="checkbox" name="renewal_alerts_enabled" value="1" @checked(old('renewal_alerts_enabled', $site->renewal_alerts_enabled ?? true))> Enviar recordatorios de vencimiento de este sitio</label>
     @include('sites.access-form')
     <hr><h2>Nakama Monitor</h2><p class="muted">Si dejás vacío el endpoint, se usa la ruta habitual de Nakama Monitor en la URL del sitio.</p>
     @if($site->exists)<p><a class="text-link" href="{{ route('sites.show', $site) }}#availability">Ver salud y actualizaciones ↗</a></p>@endif

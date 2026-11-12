@@ -84,6 +84,20 @@ alter table `health_alerts` add constraint `health_alerts_site_id_foreign` forei
 
 alter table `health_alerts` add index `health_alerts_sent_at_cancelled_at_next_attempt_at_index`(`sent_at`, `cancelled_at`, `next_attempt_at`);
 
+alter table `sites` add `hosting_renewal` varchar(10) null;
+
+alter table `sites` add `domain_renewal` varchar(10) null;
+
+alter table `sites` add `renewal_alerts_enabled` tinyint(1) not null default '1';
+
+alter table `panel_settings` add `hosting_renewal_alerts_enabled` tinyint(1) not null default '1';
+
+alter table `panel_settings` add `domain_renewal_alerts_enabled` tinyint(1) not null default '1';
+
+alter table `health_alerts` add `renewal_period` varchar(10) null;
+
+alter table `health_alerts` add unique `health_alerts_site_id_kind_renewal_period_unique`(`site_id`, `kind`, `renewal_period`);
+
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000000_create_users_table', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000001_create_cache_table', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000002_create_jobs_table', 1);
@@ -91,3 +105,4 @@ INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_10_29_000001_creat
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_10_30_000001_add_access_credentials_to_sites', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_11_12_000001_add_monitor_results_to_sites', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_11_12_000002_add_site_health_alerts', 1);
+INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_11_12_000003_add_site_renewals', 1);

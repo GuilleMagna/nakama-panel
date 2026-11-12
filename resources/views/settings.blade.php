@@ -21,6 +21,12 @@
         <label class="checkbox"><input type="checkbox" name="availability_alerts_enabled" value="1" @checked(old('availability_alerts_enabled', $settings?->availability_alerts_enabled ?? true))> Avisar si un sitio deja de responder</label>
         <input type="hidden" name="monitor_alerts_enabled" value="0">
         <label class="checkbox"><input type="checkbox" name="monitor_alerts_enabled" value="1" @checked(old('monitor_alerts_enabled', $settings?->monitor_alerts_enabled ?? true))> Avisar si falla la conexión con Nakama Monitor</label>
+        <h2>Recordatorios de vencimiento</h2>
+        <p class="muted">Los recordatorios llegan al correo de destino siete días antes de la fecha indicada o del comienzo del mes.</p>
+        <input type="hidden" name="hosting_renewal_alerts_enabled" value="0">
+        <label class="checkbox"><input type="checkbox" name="hosting_renewal_alerts_enabled" value="1" @checked(old('hosting_renewal_alerts_enabled', $settings?->hosting_renewal_alerts_enabled ?? true))> Avisar vencimientos de hosting</label>
+        <input type="hidden" name="domain_renewal_alerts_enabled" value="0">
+        <label class="checkbox"><input type="checkbox" name="domain_renewal_alerts_enabled" value="1" @checked(old('domain_renewal_alerts_enabled', $settings?->domain_renewal_alerts_enabled ?? true))> Avisar vencimientos de dominio</label>
         <div class="form-actions"><button class="button primary">Guardar configuración</button></div>
     </form>
     <section class="panel">

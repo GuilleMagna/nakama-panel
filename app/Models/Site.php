@@ -5,10 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Carbon\CarbonImmutable;
 
 class Site extends Model
 {
-    protected $fillable = ['client_id', 'name', 'url', 'ownership', 'status', 'admin_url', 'monitor_endpoint', 'monitor_token', 'monitor_interval_hours', 'notes', 'health_alerts_enabled'];
+    protected $fillable = [
+        'client_id', 'name', 'url', 'ownership', 'status', 'admin_url', 'monitor_endpoint',
+        'monitor_token', 'monitor_interval_hours', 'notes', 'health_alerts_enabled',
+        'hosting_renewal', 'domain_renewal', 'renewal_alerts_enabled',
+    ];
+
+    public const RENEWAL_LABELS = ['hosting' => 'Hosting', 'domain' => 'Dominio'];
 
     protected $hidden = ['monitor_token', 'access_credentials'];
 
@@ -23,7 +30,22 @@ class Site extends Model
             'monitor_attempted_at' => 'datetime',
             'availability_checked_at' => 'datetime',
             'health_alerts_enabled' => 'boolean',
+            'renewal_alerts_enabled' => 'boolean',
         ];
+    }
+
+    public function renewalDeadline(string $service): ?CarbonImmutable
+    {
+        $period = $this->getAttribute($service.'_renewal');
+
+        return $period ? CarbonImmutable::parse(strlen($period) === 7 ? $period.'-01' : $period)->startOfDay() : null;
+    }
+
+    public function renewalLabel(string $service): ?string
+    {
+        $period = $this->getAttribute($service.'_renewal');
+
+        return $this->renewalDeadline($service)?->translatedFormat(strlen($period ?? '') === 7 ? 'F Y' : 'd/m/Y');
     }
 
     public function monitorStatusUrl(): string

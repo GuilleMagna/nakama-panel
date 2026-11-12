@@ -9,6 +9,7 @@ class PanelSetting extends Model
     protected $fillable = [
         'monitor_interval_hours', 'availability_interval_minutes', 'health_alert_email',
         'availability_alerts_enabled', 'monitor_alerts_enabled',
+        'hosting_renewal_alerts_enabled', 'domain_renewal_alerts_enabled',
     ];
 
     public static function currentInterval(): int

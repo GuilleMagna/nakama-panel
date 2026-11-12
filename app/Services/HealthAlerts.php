@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\PanelSetting;
 use App\Models\Site;
+use Carbon\CarbonImmutable;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,24 @@ class HealthAlerts
         ]);
     }
 
+    public function recordRenewals(Site $site, PanelSetting $settings, CarbonImmutable $today): void
+    {
+        foreach (Site::RENEWAL_LABELS as $service => $label) {
+            $kind = $service.'_renewal';
+            $deadline = $site->renewalDeadline($service);
+            if (! $deadline || $today->lt($deadline->subWeek()) || $today->gt($deadline)
+                || ! $this->recipient($site, $kind, $settings)) {
+                continue;
+            }
+
+            DB::table('health_alerts')->insertOrIgnore([
+                'site_id' => $site->id, 'kind' => $kind, 'renewal_period' => $site->getAttribute($kind),
+                'detail' => 'Vencimiento de '.$label.' · '.$site->renewalLabel($service).'. Preparar la factura.',
+                'created_at' => now(), 'next_attempt_at' => now(),
+            ]);
+        }
+    }
+
     public function deliverPending(): void
     {
         $mailer = config('mail.default');
@@ -40,13 +59,23 @@ class HealthAlerts
                 $site = Site::find($alert->site_id);
                 $recipient = $site ? $this->recipient($site, $alert->kind, $settings) : null;
                 $query = DB::table('health_alerts')->where('id', $alert->id);
-                if (! $recipient) {
+                if (! $recipient || ($alert->renewal_period !== null && $site->getAttribute($alert->kind) !== $alert->renewal_period)) {
                     $query->update(['cancelled_at' => now()]);
                     continue;
                 }
 
-                $title = $alert->kind === 'availability' ? 'Sitio no disponible' : 'Falló la conexión con Nakama Monitor';
-                $url = route('sites.show', $site).'#monitor';
+                $title = match ($alert->kind) {
+                    'availability' => 'Sitio no disponible',
+                    'hosting_renewal' => 'Vencimiento de Hosting',
+                    'domain_renewal' => 'Vencimiento de Dominio',
+                    default => 'Falló la conexión con Nakama Monitor',
+                };
+                $section = match ($alert->kind) {
+                    'availability' => 'availability',
+                    'hosting_renewal', 'domain_renewal' => 'renewals',
+                    default => 'monitor',
+                };
+                $url = route('sites.show', $site).'#'.$section;
                 $body = "$title\n{$site->name}\n\n{$alert->detail}\nDetectado: {$alert->created_at}\n\n$url";
                 try {
                     Mail::raw($body, fn (Message $message) => $message->to($recipient)->subject('Nakama Panel · '.$title));
@@ -60,6 +89,11 @@ class HealthAlerts
 
     private function recipient(Site $site, string $kind, ?PanelSetting $settings): ?string
     {
+        if (in_array($kind, ['hosting_renewal', 'domain_renewal'], true)) {
+            return $settings?->getAttribute($kind.'_alerts_enabled') && $site->renewal_alerts_enabled && $site->status !== 'archived'
+                ? $settings->health_alert_email : null;
+        }
+
         $enabled = $kind === 'availability' ? $settings?->availability_alerts_enabled : $settings?->monitor_alerts_enabled;
 
         return $enabled && $site->health_alerts_enabled && $site->status === 'active' ? $settings->health_alert_email : null;

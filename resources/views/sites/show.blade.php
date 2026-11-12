@@ -3,6 +3,20 @@
 <div class="stats-grid"><article class="stat"><span>Cliente</span><strong class="stat-text">{{ $site->client?->name ?? 'Sitio propio' }}</strong><small>{{ $site->ownership === 'own' ? 'Propiedad de la empresa' : 'Sitio de cliente' }}</small></article><article class="stat"><span>Estado administrativo</span><strong class="stat-text">{{ ['active' => 'Activo', 'paused' => 'Pausado', 'archived' => 'Archivado'][$site->status] }}</strong><small>No representa disponibilidad web</small></article><article class="stat"><span>Intervalo previsto</span><strong>{{ $site->effectiveInterval() }}<em> h</em></strong><small>{{ $site->monitor_interval_hours === null ? 'Heredado de configuración general' : 'Configuración particular' }}</small></article><article class="stat"><span>Token del monitor</span><strong class="stat-text">{{ $site->getRawOriginal('monitor_token') ? 'Guardado' : 'Sin configurar' }}</strong></article></div>
 @include('sites.availability')
 @include('sites.monitor')
+<section class="panel" id="renewals">
+    <h2>Vencimientos</h2>
+    <div class="form-grid">
+        @foreach(\App\Models\Site::RENEWAL_LABELS as $service => $label)
+            <div>
+                <strong>{{ $label }}</strong>
+                <p>{{ $site->renewalLabel($service) ?? 'Sin fecha' }}</p>
+                @if($site->renewal_alerts_enabled && $site->renewalDeadline($service))
+                    <small class="muted">Aviso previsto el {{ $site->renewalDeadline($service)->subWeek()->format('d/m/Y') }}</small>
+                @endif
+            </div>
+        @endforeach
+    </div>
+</section>
 <section class="panel form-stack">
     <h2>Acceso a WordPress</h2>
     @if($site->admin_url)<p><a class="button secondary" href="{{ $site->admin_url }}" target="_blank" rel="noopener noreferrer">Abrir WordPress ↗</a></p>@else<p class="muted">Todavía no se configuró la URL del backend.</p>@endif

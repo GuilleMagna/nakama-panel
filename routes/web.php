@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
             'health_alert_email' => ['nullable', 'email', 'max:255'],
             'availability_alerts_enabled' => ['sometimes', 'boolean'],
             'monitor_alerts_enabled' => ['sometimes', 'boolean'],
+            'hosting_renewal_alerts_enabled' => ['sometimes', 'boolean'],
+            'domain_renewal_alerts_enabled' => ['sometimes', 'boolean'],
         ]);
         PanelSetting::updateOrCreate(['id' => 1], $data);
         return redirect()->route('settings')->with('success', 'Frecuencia general actualizada.');
