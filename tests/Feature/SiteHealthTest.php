@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\SitesIndex;
 use App\Models\PanelSetting;
 use App\Models\Site;
 use App\Models\User;
@@ -10,6 +11,7 @@ use App\Services\NakamaMonitor;
 use App\Services\SiteAvailability;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Livewire\Livewire;
 use RuntimeException;
 use Symfony\Component\Mailer\Exception\TransportException;
 use Tests\TestCase;
@@ -17,6 +19,31 @@ use Tests\TestCase;
 class SiteHealthTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_general_checks_process_all_eligible_sites_regardless_of_list_filters(): void
+    {
+        $this->actingAs(User::factory()->create());
+        $withToken = Site::create(['name' => 'Visible', 'url' => 'https://visible.test', 'ownership' => 'own', 'monitor_token' => 'token']);
+        $withoutToken = Site::create(['name' => 'Oculto', 'url' => 'https://hidden.test', 'ownership' => 'own']);
+        Site::create(['name' => 'Pausado', 'url' => 'https://paused.test', 'ownership' => 'own', 'status' => 'paused', 'monitor_token' => 'token']);
+
+        $list = Livewire::test(SitesIndex::class)->set('search', 'Visible');
+        $list->call('startChecks', 'availability')->assertSee('0/2 procesados');
+        $list->call('startChecks', 'availability')->assertSee('Ya hay una consulta general en curso.');
+        $list->call('startChecks', 'monitor')->assertSee('0/1 procesados');
+        $this->assertDatabaseCount('jobs', 3);
+
+        $availability = $this->mock(SiteAvailability::class);
+        foreach ([$withToken, $withoutToken] as $site) {
+            $availability->shouldReceive('check')->once()->withArgs(fn (Site $target) => $target->is($site))->andReturnNull();
+        }
+        $this->mock(NakamaMonitor::class)->shouldReceive('check')->once()
+            ->withArgs(fn (Site $target) => $target->is($withToken))->andReturnNull();
+
+        $this->artisan('queue:work', ['connection' => 'database', '--queue' => 'site-checks', '--stop-when-empty' => true])->assertSuccessful();
+        $list->call('$refresh')->assertSee('2/2 procesados')->assertSee('1/1 procesados');
+        $this->assertDatabaseCount('jobs', 0);
+    }
 
     public function test_manual_checks_record_separate_alerts_and_skip_duplicate_failures(): void
     {

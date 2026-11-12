@@ -1,4 +1,26 @@
-<section class="panel table-panel">
+<section class="panel table-panel" @if(collect($checkBatches)->contains('running', true)) wire:poll.5s @endif>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px">
+        <button type="button" class="button secondary" wire:click="startChecks('availability')" wire:loading.attr="disabled" @disabled($checkBatches['availability']['running'] ?? false)>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12h5l3-7 4 14 3-7h5"/></svg>
+            Verificar todos
+        </button>
+        <button type="button" class="button secondary" wire:click="startChecks('monitor')" wire:loading.attr="disabled" @disabled($checkBatches['monitor']['running'] ?? false)>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M5 9a7.5 7.5 0 0 1 13-3l2 3M4 15l2 3a7.5 7.5 0 0 0 13-3"/></svg>
+            Consultar actualizaciones de todos
+        </button>
+        <small class="muted">Sitios activos</small>
+    </div>
+    @if($checkMessage || $checkBatches)
+        <div class="loading" role="status">
+            @if($checkMessage)<div>{{ $checkMessage }}</div>@endif
+            @foreach($checkBatches as $batch)
+                <div>{{ $batch['label'] }} · {{ $batch['completed'] }}/{{ $batch['total'] }} procesados
+                    @if($batch['running']) · En curso @endif
+                    @if($batch['failed']) · {{ $batch['failed'] }} con error de ejecución @endif
+                </div>
+            @endforeach
+        </div>
+    @endif
     <div class="filters"><label class="search-field">Buscar sitio<input type="search" wire:model.live.debounce.300ms="search" placeholder="Nombre o URL…"></label><label>Cliente<select wire:model.live="client"><option value="">Todos los clientes</option>@foreach($clients as $customer)<option value="{{ $customer->id }}">{{ $customer->name }}</option>@endforeach</select></label><label>Propiedad<select wire:model.live="ownership"><option value="">Todas las propiedades</option><option value="own">Propios</option><option value="client">De clientes</option></select></label><label>Estado<select wire:model.live="status"><option value="">Todos los estados</option><option value="active">Activo</option><option value="paused">Pausado</option><option value="archived">Archivado</option></select></label></div>
     <div wire:loading class="loading" role="status">Actualizando listado…</div>
     <div class="table-scroll"><table><thead><tr><th>Sitio / URL</th><th>Cliente</th><th>Estado</th><th>Disponibilidad</th><th>Actualizaciones</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody>
