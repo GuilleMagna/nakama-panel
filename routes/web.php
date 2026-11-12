@@ -8,6 +8,7 @@ use App\Models\PanelSetting;
 use App\Models\Site;
 use App\Models\SiteEvent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -26,9 +27,22 @@ Route::middleware('auth')->group(function () {
     Route::view('/sites', 'sites.index')->name('sites.index');
     Route::resource('sites', SiteController::class)->except(['index']);
     Route::post('/sites/{site}/events', [SiteController::class, 'event'])->name('sites.events.store');
-    Route::get('/settings', fn () => view('settings', ['interval' => PanelSetting::currentInterval()]))->name('settings');
+    Route::post('/sites/{site}/monitor', [SiteController::class, 'checkMonitor'])->middleware('throttle:12,1')->name('sites.monitor.check');
+    Route::post('/sites/{site}/availability', [SiteController::class, 'checkAvailability'])->middleware('throttle:12,1')->name('sites.availability.check');
+    Route::get('/settings', fn () => view('settings', [
+        'settings' => PanelSetting::find(1),
+        'alerts' => DB::table('health_alerts')->join('sites', 'sites.id', '=', 'health_alerts.site_id')
+            ->select('health_alerts.*', 'sites.name as site_name')->orderByDesc('health_alerts.id')->limit(20)->get(),
+        'mailConfigured' => ! in_array(config('mail.mailers.'.config('mail.default').'.transport'), ['log', 'array', null], true),
+    ]))->name('settings');
     Route::put('/settings', function (Request $request) {
-        $data = $request->validate(['monitor_interval_hours' => ['required', 'integer', 'min:1', 'max:720']]);
+        $data = $request->validate([
+            'monitor_interval_hours' => ['required', 'integer', 'min:1', 'max:720'],
+            'availability_interval_minutes' => ['sometimes', 'integer', 'min:5', 'max:1440', 'multiple_of:5'],
+            'health_alert_email' => ['nullable', 'email', 'max:255'],
+            'availability_alerts_enabled' => ['sometimes', 'boolean'],
+            'monitor_alerts_enabled' => ['sometimes', 'boolean'],
+        ]);
         PanelSetting::updateOrCreate(['id' => 1], $data);
         return redirect()->route('settings')->with('success', 'Frecuencia general actualizada.');
     })->name('settings.update');

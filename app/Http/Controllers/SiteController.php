@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Site;
 use App\Models\SiteEvent;
+use App\Services\NakamaMonitor;
+use App\Services\SiteAvailability;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -55,9 +57,41 @@ class SiteController extends Controller
         if (empty($data['monitor_token'])) {
             unset($data['monitor_token']);
         }
-        $site->update($data);
+        $site->fill($data);
+        if ($site->isDirty('url')) {
+            $site->forceFill(['availability_checked_at' => null, 'availability_error' => null]);
+        }
+        if ($site->isDirty(['url', 'monitor_endpoint', 'monitor_token'])) {
+            $site->forceFill([
+                'monitor_snapshot' => null,
+                'monitor_checked_at' => null,
+                'monitor_attempted_at' => null,
+                'monitor_error' => null,
+            ]);
+        }
+        $site->save();
 
         return redirect()->route('sites.show', $site)->with('success', 'Sitio actualizado.');
+    }
+
+    public function checkMonitor(Site $site, NakamaMonitor $monitor)
+    {
+        $error = $monitor->check($site);
+        $response = redirect(route('sites.show', $site).'#monitor');
+
+        return $error === null
+            ? $response->with('success', 'Estado de actualizaciones consultado.')
+            : $response->withErrors(['monitor' => $error]);
+    }
+
+    public function checkAvailability(Site $site, SiteAvailability $availability)
+    {
+        $error = $availability->check($site);
+        $response = redirect(route('sites.show', $site).'#availability');
+
+        return $error === null
+            ? $response->with('success', 'El sitio está disponible desde el Panel.')
+            : $response->withErrors(['availability' => $error]);
     }
 
     public function event(Request $request, Site $site)
@@ -92,6 +126,7 @@ class SiteController extends Controller
             'monitor_endpoint' => ['nullable', 'url:https', 'max:500'],
             'monitor_token' => ['nullable', 'string', 'max:255'],
             'monitor_interval_hours' => ['nullable', 'integer', 'min:1', 'max:720'],
+            'health_alerts_enabled' => ['sometimes', 'boolean'],
             'notes' => ['nullable', 'string', 'max:10000'],
             'access' => ['sometimes', 'array:wordpress,cpanel,ftp'],
             'access.wordpress' => ['sometimes', 'array:username,password'],

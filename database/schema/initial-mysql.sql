@@ -56,8 +56,38 @@ create table `panel_settings` (`id` bigint unsigned not null auto_increment prim
 
 alter table `sites` add `access_credentials` text null;
 
+alter table `sites` add `monitor_snapshot` json null;
+
+alter table `sites` add `monitor_checked_at` timestamp null;
+
+alter table `sites` add `monitor_attempted_at` timestamp null;
+
+alter table `sites` add `monitor_error` varchar(255) null;
+
+alter table `sites` add `availability_checked_at` timestamp null;
+
+alter table `sites` add `availability_error` varchar(255) null;
+
+alter table `sites` add `health_alerts_enabled` tinyint(1) not null default '1';
+
+alter table `panel_settings` add `availability_interval_minutes` smallint unsigned not null default '30';
+
+alter table `panel_settings` add `health_alert_email` varchar(255) null;
+
+alter table `panel_settings` add `availability_alerts_enabled` tinyint(1) not null default '1';
+
+alter table `panel_settings` add `monitor_alerts_enabled` tinyint(1) not null default '1';
+
+create table `health_alerts` (`id` bigint unsigned not null auto_increment primary key, `site_id` bigint unsigned not null, `kind` varchar(20) not null, `detail` varchar(255) not null, `created_at` timestamp not null, `next_attempt_at` timestamp not null, `sent_at` timestamp null, `cancelled_at` timestamp null, `delivery_failed` tinyint(1) not null default '0') default character set utf8mb4 collate 'utf8mb4_unicode_ci' engine = InnoDB;
+
+alter table `health_alerts` add constraint `health_alerts_site_id_foreign` foreign key (`site_id`) references `sites` (`id`) on delete cascade;
+
+alter table `health_alerts` add index `health_alerts_sent_at_cancelled_at_next_attempt_at_index`(`sent_at`, `cancelled_at`, `next_attempt_at`);
+
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000000_create_users_table', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000001_create_cache_table', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000002_create_jobs_table', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_10_29_000001_create_panel_tables', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_10_30_000001_add_access_credentials_to_sites', 1);
+INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_11_12_000001_add_monitor_results_to_sites', 1);
+INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_11_12_000002_add_site_health_alerts', 1);

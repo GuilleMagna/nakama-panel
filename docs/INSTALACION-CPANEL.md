@@ -38,6 +38,18 @@ Apuntar `panel.whileam.com.ar` a `/home/bizpills/nakama-panel/public`, nunca a l
 
 ## Verificación
 
+### Chequeos de salud y correo
+
+En **Cron Jobs** de cPanel, agregá una tarea con frecuencia `* * * * *` y el comando:
+
+```sh
+cd /home/bizpills/nakama-panel && /opt/cpanel/ea-php84/root/usr/bin/php artisan schedule:run
+```
+
+El Panel revisa qué sitios activos tienen un chequeo pendiente. El intervalo inicial de disponibilidad es de 30 minutos y el de actualizaciones es de 12 horas. El chequeo público verifica la respuesta HTTP y las redirecciones desde el hosting.
+
+Configurá el transporte SMTP y el remitente en `.env` y guardá el correo de destino en **Configuración** del Panel. Con `MAIL_MAILER=log`, los avisos quedan pendientes. Los avisos de nuevas caídas y fallos de Nakama Monitor aparecen en **Avisos recientes**, junto con el estado de entrega. El envío programado reintenta los errores del servicio de correo.
+
 ### Actualizaciones desde Git
 
 Después de la instalación inicial, utilizar **Actualizar desde remoto** y luego **Deploy HEAD Commit**. La tarea versionada en `.cpanel.yml` ejecuta `deploy/cpanel.sh` desde `/home/bizpills/nakama-panel`, usando PHP CLI 8.4 de cPanel. Aplica `php artisan migrate --force --no-interaction` y limpia las vistas compiladas. No importa esquemas iniciales, no recrea usuarios y no cambia APP_KEY.
