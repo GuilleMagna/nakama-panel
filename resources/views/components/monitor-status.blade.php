@@ -12,5 +12,5 @@
     <x-health-badge>{{ $site->getRawOriginal('monitor_token') ? 'Sin consultar' : 'Sin token' }}</x-health-badge>
 @endif
 @if($site->monitor_checked_at)
-    <small>Última lectura {{ $site->monitor_checked_at->format('d/m H:i') }}</small>
+    <small>Última lectura · <x-relative-time :at="$site->monitor_checked_at" /></small>
 @endif

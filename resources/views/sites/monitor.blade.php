@@ -13,7 +13,7 @@
         <div class="notice error" role="status">{{ $site->monitor_error }} @if($snapshot) Se muestran los datos de la última consulta exitosa. @endif</div>
     @endif
     @if($snapshot)
-        <p class="muted">Última consulta exitosa {{ $site->monitor_checked_at?->format('d/m/Y H:i') }} · Nakama Monitor {{ $snapshot['monitor_version'] }}</p>
+        <p class="muted">Última consulta exitosa · <x-relative-time :at="$site->monitor_checked_at" /> · Nakama Monitor {{ $snapshot['monitor_version'] }}</p>
         <nav aria-label="Filtrar actualizaciones" style="display:flex;gap:8px;flex-wrap:wrap">
             @foreach(['all' => 'Todas', 'available' => 'Disponible', 'current' => 'Sin pendientes'] as $filter => $label)
                 <a class="button {{ $updateFilter === $filter ? 'primary' : 'secondary' }}"

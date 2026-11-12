@@ -7,5 +7,5 @@
     <x-health-badge>Sin chequear</x-health-badge>
 @endif
 @if($site->availability_checked_at)
-    <small>{{ $site->availability_checked_at->format('d/m H:i') }}</small>
+    <small><x-relative-time :at="$site->availability_checked_at" /></small>
 @endif
