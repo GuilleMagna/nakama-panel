@@ -160,7 +160,16 @@ class NakamaMonitor
             'new_version' => $item['new_version'] ?? null,
         ];
 
+        $backup = Validator::make($payload, [
+            'backup.provider' => ['required', 'in:updraftplus'],
+            'backup.installed' => ['required', 'boolean'],
+            'backup.history_found' => ['required', 'boolean'],
+            'backup.complete' => ['required', 'boolean'],
+            'backup.last_backup' => ['required_if:backup.history_found,true,1', 'nullable', 'date_format:Y-m-d\TH:i:sP'],
+        ]);
+
         return [
+            'backup' => $backup->passes() ? $backup->validated()['backup'] : null,
             'monitor_version' => $payload['monitor_version'],
             'wordpress' => $version($payload['wordpress']),
             'theme' => ['name' => $payload['theme']['name'], ...$version($payload['theme'])],

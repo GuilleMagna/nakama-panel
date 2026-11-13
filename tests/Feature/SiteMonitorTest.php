@@ -27,6 +27,10 @@ class SiteMonitorTest extends TestCase
         $client->shouldReceive('request')->with('https://example.test/blog/wp-json/nakama-monitor/v1/status', 'token-de-prueba', $site->url)
             ->once()->andReturn([
                 'monitor_version' => '0.3.6',
+                'backup' => [
+                    'provider' => 'updraftplus', 'installed' => true, 'history_found' => true,
+                    'last_backup' => '2026-11-12T03:00:00-03:00', 'complete' => true,
+                ],
                 'wordpress' => ['version' => '6.8', 'update_available' => true, 'new_version' => '6.8.1'],
                 'theme' => ['name' => 'Tema', 'version' => '1.0', 'update_available' => false],
                 'plugins' => ['items' => [['name' => 'Plugin de prueba', 'version' => '2.0', 'update_available' => true, 'new_version' => '2.1']]],
@@ -40,7 +44,9 @@ class SiteMonitorTest extends TestCase
         $this->assertNotNull($site->monitor_checked_at);
         $this->get(route('sites.show', $site))->assertOk()->assertSee('Plugin de prueba')->assertSee('2.1')->assertDontSee('token-de-prueba');
         $available = route('sites.show', ['site' => $site, 'updates' => 'available']);
-        $this->get('/sites')->assertOk()->assertSee($available.'#monitor', false)->assertSee('2 pendientes');
+        $this->get('/sites')->assertOk()->assertSee($available.'#monitor', false)->assertSee('2 pendientes')
+            ->assertSeeInOrder(['Actualizaciones</th>', 'Backups</th>'], false)
+            ->assertSee('Backup completo')->assertSee('2026-11-12T03:00:00-03:00');
         $this->get($available)->assertOk()->assertSee('Plugin de prueba')->assertDontSee('Tema activo · Tema');
         $this->get(route('sites.show', ['site' => $site, 'updates' => 'current']))
             ->assertOk()->assertSee('Tema activo · Tema')->assertDontSee('Plugin de prueba');
