@@ -38,6 +38,24 @@ class SiteRenewalsTest extends TestCase
         $this->get(route('sites.show', $site))->assertOk()->assertSee('25/12/2026')->assertSee('26/12/2026');
     }
 
+    public function test_due_renewals_advance_without_email_and_can_be_retried(): void
+    {
+        $this->travelTo(now()->setDate(2028, 2, 29));
+        $site = Site::create([
+            'name' => 'Sitio', 'url' => 'https://renew.test', 'ownership' => 'own',
+            'hosting_renewal' => '2026-02', 'domain_renewal' => '2028-02-29',
+            'renewal_alerts_enabled' => false,
+        ]);
+
+        $this->artisan('renewals:check')->assertSuccessful();
+        $this->artisan('renewals:check')->assertSuccessful();
+
+        $site->refresh();
+        $this->assertSame('2029-02', $site->hosting_renewal);
+        $this->assertSame('2029-02-28', $site->domain_renewal);
+        $this->assertDatabaseCount('health_alerts', 0);
+    }
+
     public function test_global_and_site_preferences_control_renewal_alerts_independently_from_health(): void
     {
         $this->travelTo(now()->setDate(2026, 12, 25));

@@ -93,7 +93,15 @@ class SiteAvailability
             unset($handle);
 
             if ($ok === false && ! ($stoppedAtBody && $errno === CURLE_WRITE_ERROR)) {
-                throw new RuntimeException('El sitio no respondió por HTTP o HTTPS desde el Panel.');
+                $reason = match ($errno) {
+                    CURLE_OPERATION_TIMEDOUT => 'Se agotó el tiempo de conexión desde el Panel.',
+                    CURLE_COULDNT_CONNECT => 'El hosting del Panel no pudo conectarse al servidor del sitio.',
+                    CURLE_PEER_FAILED_VERIFICATION, CURLE_SSL_CACERT_BADFILE => 'El hosting del Panel no pudo verificar el certificado HTTPS.',
+                    CURLE_SSL_CONNECT_ERROR => 'Falló la negociación HTTPS desde el Panel.',
+                    default => 'Falló la conexión HTTP o HTTPS desde el Panel.',
+                };
+
+                throw new RuntimeException($reason.' (cURL '.$errno.')');
             }
             if ($status >= 200 && $status < 300) {
                 return;

@@ -145,6 +145,11 @@ class SiteController extends Controller
             'hosting_renewal' => ['nullable', 'date_format:Y-m,Y-m-d'],
             'domain_renewal' => ['nullable', 'date_format:Y-m,Y-m-d'],
             'renewal_alerts_enabled' => ['sometimes', 'boolean'],
+            'contact_first_name' => ['nullable', 'string', 'max:255'],
+            'contact_last_name' => ['nullable', 'string', 'max:255'],
+            'contact_cuit' => ['nullable', 'string', 'regex:/^(?:[0-9]{11}|[0-9]{2}-[0-9]{8}-[0-9])$/D'],
+            'contact_email' => ['nullable', 'email', 'max:255'],
+            'contact_phone' => ['nullable', 'string', 'max:50'],
             'notes' => ['nullable', 'string', 'max:10000'],
             'access' => ['sometimes', 'array:wordpress,cpanel,ftp'],
             'access.wordpress' => ['sometimes', 'array:username,password'],
@@ -156,6 +161,12 @@ class SiteController extends Controller
             'access.ftp.host' => ['nullable', 'string', 'max:255'],
             'access.ftp.port' => ['nullable', 'integer', 'between:1,65535'],
             'access.ftp.protocol' => ['nullable', Rule::in(['ftp', 'ftps', 'sftp'])],
+        ], ['contact_cuit.regex' => 'Ingresá un CUIT de 11 dígitos, con o sin guiones.'], [
+            'contact_first_name' => 'nombre del contacto',
+            'contact_last_name' => 'apellido del contacto',
+            'contact_cuit' => 'CUIT del contacto',
+            'contact_email' => 'correo del contacto',
+            'contact_phone' => 'teléfono del contacto',
         ]);
     }
 }

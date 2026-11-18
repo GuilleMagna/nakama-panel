@@ -13,6 +13,7 @@ class Site extends Model
         'client_id', 'name', 'url', 'ownership', 'status', 'admin_url', 'monitor_endpoint',
         'monitor_token', 'monitor_interval_hours', 'notes', 'health_alerts_enabled',
         'hosting_renewal', 'domain_renewal', 'renewal_alerts_enabled',
+        'contact_first_name', 'contact_last_name', 'contact_cuit', 'contact_email', 'contact_phone',
     ];
 
     public const RENEWAL_LABELS = ['hosting' => 'Hosting', 'domain' => 'Dominio'];

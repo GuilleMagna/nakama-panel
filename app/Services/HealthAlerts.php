@@ -59,13 +59,13 @@ class HealthAlerts
                 $site = Site::find($alert->site_id);
                 $recipient = $site ? $this->recipient($site, $alert->kind, $settings) : null;
                 $query = DB::table('health_alerts')->where('id', $alert->id);
-                if (! $recipient || ($alert->renewal_period !== null && $site->getAttribute($alert->kind) !== $alert->renewal_period)) {
+                if (! $recipient || ! $this->matchesRenewalPeriod($site, $alert->kind, $alert->renewal_period)) {
                     $query->update(['cancelled_at' => now()]);
                     continue;
                 }
 
                 $title = match ($alert->kind) {
-                    'availability' => 'Sitio no disponible',
+                    'availability' => 'Falló el chequeo de disponibilidad',
                     'hosting_renewal' => 'Vencimiento de Hosting',
                     'domain_renewal' => 'Vencimiento de Dominio',
                     default => 'Falló la conexión con Nakama Monitor',
@@ -85,6 +85,19 @@ class HealthAlerts
                 }
             }
         });
+    }
+
+    private function matchesRenewalPeriod(Site $site, string $kind, ?string $period): bool
+    {
+        if ($period === null || $site->getAttribute($kind) === $period) {
+            return true;
+        }
+
+        $monthly = strlen($period) === 7;
+        $deadline = CarbonImmutable::parse($monthly ? $period.'-01' : $period)->startOfDay();
+        $nextPeriod = $deadline->addYearNoOverflow()->format($monthly ? 'Y-m' : 'Y-m-d');
+
+        return $deadline->lte(CarbonImmutable::today()) && $site->getAttribute($kind) === $nextPeriod;
     }
 
     private function recipient(Site $site, string $kind, ?PanelSetting $settings): ?string

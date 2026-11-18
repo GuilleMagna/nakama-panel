@@ -6,7 +6,7 @@
     <div class="form-grid"><label>Estado administrativo<select name="status">@foreach(['active' => 'Activo', 'paused' => 'Pausado', 'archived' => 'Archivado'] as $key => $label)<option value="{{ $key }}" @selected(old('status', $site->status) === $key)>{{ $label }}</option>@endforeach</select></label><label>URL de acceso al backend<input type="url" name="admin_url" maxlength="500" value="{{ old('admin_url', $site->admin_url) }}" placeholder="https://ejemplo.com.ar/wp-admin"></label></div>
     <hr>
     <h2>Vencimientos</h2>
-    <p class="muted">Ingresá mes y año (AAAA-MM) o la fecha completa (AAAA-MM-DD). Para un mes, el aviso se calcula desde su primer día.</p>
+    <p class="muted">Ingresá mes y año (AAAA-MM) o la fecha completa (AAAA-MM-DD). El vencimiento avanza un año automáticamente al llegar a la fecha. Si ingresás solo mes y año, se toma el primer día de ese mes.</p>
     <div class="form-grid">
         @foreach(\App\Models\Site::RENEWAL_LABELS as $service => $label)
             <label>{{ $label }}
@@ -16,6 +16,25 @@
     </div>
     <input type="hidden" name="renewal_alerts_enabled" value="0">
     <label class="checkbox"><input type="checkbox" name="renewal_alerts_enabled" value="1" @checked(old('renewal_alerts_enabled', $site->renewal_alerts_enabled ?? true))> Enviar recordatorios de vencimiento de este sitio</label>
+    <hr>
+    <h2>Contacto para renovaciones y consultas</h2>
+    <div class="form-grid">
+        <label>Nombre
+            <input name="contact_first_name" autocomplete="section-site-contact given-name" maxlength="255" value="{{ old('contact_first_name', $site->contact_first_name) }}">
+        </label>
+        <label>Apellido
+            <input name="contact_last_name" autocomplete="section-site-contact family-name" maxlength="255" value="{{ old('contact_last_name', $site->contact_last_name) }}">
+        </label>
+        <label>CUIT
+            <input name="contact_cuit" maxlength="13" placeholder="XX-XXXXXXXX-X" value="{{ old('contact_cuit', $site->contact_cuit) }}">
+        </label>
+        <label>Correo electrónico
+            <input type="email" name="contact_email" autocomplete="section-site-contact email" maxlength="255" value="{{ old('contact_email', $site->contact_email) }}">
+        </label>
+        <label>Teléfono
+            <input type="tel" name="contact_phone" autocomplete="section-site-contact tel" maxlength="50" value="{{ old('contact_phone', $site->contact_phone) }}">
+        </label>
+    </div>
     @include('sites.access-form')
     <hr><h2>Nakama Monitor</h2><p class="muted">Si dejás vacío el endpoint, se usa la ruta habitual de Nakama Monitor en la URL del sitio.</p>
     @if($site->exists)<p><a class="text-link" href="{{ route('sites.show', $site) }}#availability">Ver salud y actualizaciones ↗</a></p>@endif

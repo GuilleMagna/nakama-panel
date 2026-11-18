@@ -98,6 +98,16 @@ alter table `health_alerts` add `renewal_period` varchar(10) null;
 
 alter table `health_alerts` add unique `health_alerts_site_id_kind_renewal_period_unique`(`site_id`, `kind`, `renewal_period`);
 
+alter table `sites` add `contact_first_name` varchar(255) null;
+
+alter table `sites` add `contact_last_name` varchar(255) null;
+
+alter table `sites` add `contact_cuit` varchar(13) null;
+
+alter table `sites` add `contact_email` varchar(255) null;
+
+alter table `sites` add `contact_phone` varchar(50) null;
+
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000000_create_users_table', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000001_create_cache_table', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('0001_01_01_000002_create_jobs_table', 1);
@@ -106,3 +116,4 @@ INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_10_30_000001_add_a
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_11_12_000001_add_monitor_results_to_sites', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_11_12_000002_add_site_health_alerts', 1);
 INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_11_12_000003_add_site_renewals', 1);
+INSERT INTO `migrations` (`migration`, `batch`) VALUES ('2026_11_17_000001_add_contact_to_sites', 1);

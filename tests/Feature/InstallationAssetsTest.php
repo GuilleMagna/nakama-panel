@@ -17,7 +17,7 @@ class InstallationAssetsTest extends TestCase
             $sql = file_get_contents($path);
             $this->assertSame(file_get_contents(base_path('database/schema/initial-mysql.sql')), $sql);
             $this->assertSame(14, preg_match_all('/^create table `/m', $sql));
-            $this->assertSame(8, substr_count($sql, 'INSERT INTO `migrations`'));
+            $this->assertSame(9, substr_count($sql, 'INSERT INTO `migrations`'));
             $this->assertDoesNotMatchRegularExpression('/^\s*(DROP|DELETE|TRUNCATE|UPDATE)\s/im', $sql);
             $this->assertDoesNotMatchRegularExpression('/INSERT INTO `users`/i', $sql);
         } finally {

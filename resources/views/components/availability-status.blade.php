@@ -1,6 +1,7 @@
 @props(['site'])
 @if($site->availability_error)
-    <x-health-badge state="error">No disponible</x-health-badge>
+    @php($connectionFailed = str_contains($site->availability_error, '(cURL ') || $site->availability_error === 'El sitio no respondió por HTTP o HTTPS desde el Panel.')
+    <x-health-badge state="error">{{ $connectionFailed ? 'Sin conexión desde el Panel' : 'No disponible' }}</x-health-badge>
 @elseif($site->availability_checked_at)
     <x-health-badge state="ok">Disponible</x-health-badge>
 @else

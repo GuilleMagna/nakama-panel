@@ -17,6 +17,20 @@
         @endforeach
     </div>
 </section>
+<section class="panel">
+    <h2>Contacto para renovaciones y consultas</h2>
+    @if($site->contact_first_name || $site->contact_last_name || $site->contact_cuit || $site->contact_email || $site->contact_phone)
+        <dl class="form-grid">
+            @foreach(['Nombre' => $site->contact_first_name, 'Apellido' => $site->contact_last_name, 'CUIT' => $site->contact_cuit, 'Correo electrónico' => $site->contact_email, 'Teléfono' => $site->contact_phone] as $label => $value)
+                @if(filled($value))
+                    <div><dt><strong>{{ $label }}</strong></dt><dd>{{ $value }}</dd></div>
+                @endif
+            @endforeach
+        </dl>
+    @else
+        <p class="muted">Todavía no hay un contacto registrado.</p>
+    @endif
+</section>
 <section class="panel form-stack">
     <h2>Acceso a WordPress</h2>
     @if($site->admin_url)<p><a class="button secondary" href="{{ $site->admin_url }}" target="_blank" rel="noopener noreferrer">Abrir WordPress ↗</a></p>@else<p class="muted">Todavía no se configuró la URL del backend.</p>@endif
